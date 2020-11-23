@@ -3,11 +3,13 @@ import App from "./app";
 
 /* Router list import */
 import PageRouter from "./routes/router.page"
+import MemberRouter from "./routes/router.member"
 
 
 const application = new App(
   [
-    new PageRouter()
+    new PageRouter(),
+    new MemberRouter()
   ]
 );
 

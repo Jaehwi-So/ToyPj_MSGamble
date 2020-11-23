@@ -6,7 +6,7 @@ type Config = {
   password: string,
   database: string,
   host: string,
-  [key: string]: string,
+  [key: string]: any,
 }
 interface IConfigGroup {
   development: Config;
@@ -19,7 +19,13 @@ const config: IConfigGroup = {
     "password": process.env.DB_PASSWORD!,
     "database": "msgamble",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4", 
+      "dateStrings" : true, 
+      "typeCast" : true 
+    },
+    "timezone": "+09:00",
   },
   "test": {
     "username": "root",

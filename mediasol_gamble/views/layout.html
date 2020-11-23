@@ -4,17 +4,146 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MSCL</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href='https://fonts.googleapis.com/css?family=Do+Hyeon' rel='stylesheet' type='text/css'>
     <style>
-        header{
-            position : relative;
-            margin : auto;
-            margin-top : 30px;
-            width : 900px;
-            background-color: green;
-        }
+    header{
+        position : relative;
+        margin : auto;
+        margin-top : 30px;
+        width : 900px;
+        background-color: black;
+    }
+    #head_banner{
+        margin : auto;
+        height : 120px;
+    }
+    #auth_box{
+        text-align : right;
+        font-size : 20px;
+        font-family: 'Do Hyeon';
+        color : white;
+        margin-right : 15px;
+    }
+    #head_title{
+        margin : auto;
+        text-align : center;
+        width : 600px;
+        font-size : 45px;
+        margin-bottom : 25px;
+        color : white;
+        font-family : 'Do Hyeon';
+        font-weight : 'bold';
+    }
+    #head_navi{
+        margin : auto;
+        height : 35px;
+        cursor: pointer;
+    }
+    #head_navi ul{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+    }
+    #head_navi li{
+        float: left;
+        width: 33.3%;
+    }
+    #head_navi li a{ 
+        color: black;
+        display: block;
+        height: 35px;
+        border-right: 3px solid black;
+        border-bottom: 3px solid black;
+        text-align: center;
+        background: white;
+        font-size: 22px;
+        font-family: 'Do Hyeon';
+    }
+    .navi_left{
+        border-left: 3px solid black;
+    }    
+    main{
+      margin : auto;
+      margin-top : 20px;
+      margin-bottom : 100px;
+      position : relative;
+      width : 856px;
+      padding : 20px;
+      background-color : gray;
+      overflow : auto;
+      border : 2px solid black;
+    }
+    #main_content{
+        width : 800px;
+        padding : 20px;
+        padding-top : 30px;
+        margin : auto;
+        background-color: white;
+    }
     </style>
+    {% block style %}
+    {% endblock %}
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
 <body>
-    
+    <header>
+        <div id="head_banner">
+            <p id="auth_box">
+                {% if member and member.id %}
+                {{member.m_name}}님 환영합니다. | 
+                <span onclick="main_logout_page();" style="cursor:pointer;">로그아웃</span>
+                {% else %}
+                <span onclick="main_login_page();" style="cursor:pointer;">로그인</span> | 
+                <span onclick="main_join_page();" style="cursor:pointer;">회원가입</span>
+                {% endif %}
+            </p>
+            <p id="head_title"><span onclick="location.href='/'">Cart Media Premier League</a></p> 
+        </div>
+        <div id="head_navi">
+            <ul>
+                <li><a href="/page/record" class="navi_left">경기 기록 보기</a></li>
+                <li><a href="#">점수 갱신</a></li>
+                <li><a href="#">명예의 전당</a></li>
+            </ul>
+        </div>
+    </header>
+    <main>
+        <div id="main_content">
+            {% block main_content %}
+            {% endblock %}
+        </div>
+    </main>
+    <script>
+        const main_login_page = () => {
+            location.href="/page/login"
+        };
+
+        const main_logout_page = () => {
+            axios.post('/member/logout')
+            .then((res) => {
+                const result = res.data.result;
+                if (result == 'success') {
+                    alert('로그아웃 성공!');
+                    location.href="/";
+                    return;
+                }
+                alert('로그아웃 실패!');
+                location.href="/";
+            })
+            .catch((err) => {
+                console.error(err);
+                location.href="/";
+            });
+        };
+
+        const main_join_page = () => {
+            location.href="/page/join"
+        };
+    </script>
+    {% block script %}
+    {% endblock %}
 </body>
 </html>

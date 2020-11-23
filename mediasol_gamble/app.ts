@@ -7,8 +7,9 @@ import expressSession from 'express-session';
 import nunjucks from 'nunjucks';
 import dotenv from 'dotenv';
 import fs from 'fs';
-
 import Routers from './routes/routerImpl';
+import passport from 'passport';
+import passportConfig from './passport';
 
 class App {
     public app: express.Application;
@@ -58,6 +59,7 @@ class App {
     /* 미들웨어 연결 */ 
     public initMiddlewares = () => {
         dotenv.config();
+        passportConfig();
         this.app.set('port', process.env.PORT || 8001);  //port
         this.app.set('view engine', 'html'); //view engine
         nunjucks.configure('views', {   //template : nunjucks
@@ -86,6 +88,10 @@ class App {
         }
         const sessionMiddleware = expressSession(sessionOption);
         this.app.use(sessionMiddleware);
+
+        //passport
+        this.app.use(passport.initialize());//passport.initialize 미들웨어는 req객체에 passport 설정을 심는다.
+        this.app.use(passport.session());//passport.session 미드웨어는 req.session 객체에 passport 정보를 저장한다.
     }
 
     /* 라우터 연결 */

@@ -1,48 +1,56 @@
 import { 
-    Model, DataTypes, BelongsToManyGetAssociationsMixin, 
-    HasManyGetAssociationsMixin, BelongsToManyRemoveAssociationMixin,
-    BelongsToManyAddAssociationMixin,
-   } from 'sequelize';
-  import { dbType } from './index';
-  import { sequelize } from './sequelize';
+  Model, DataTypes, BelongsToManyGetAssociationsMixin, HasManyGetAssociationsMixin, 
+  BelongsToManyRemoveAssociationMixin, BelongsToManyAddAssociationMixin,
+} from 'sequelize';
+import { dbType } from './index';
+import { sequelize } from './sequelize';
   
-  class Member extends Model {
-    public readonly id!: number;
-    public nickname!: string;
-    public userId!: string;
-    public password!: string;
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
+class Member extends Model {
+  //! : null과 undefined 허용 ? : 필수값이 아닌 optional한 값
+  public readonly id!: number;
+  public m_id!: string;   //아이디
+  public m_pwd!: string;  //비밀번호
+  public m_name!: string; //이름
+  public point!: number;  //현재 포인트
+  public is_join!: number;  //현재경기 참여여부
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
+}
   
-  }
-  
-  Member.init({
-    nickname: {
-      type: DataTypes.STRING(20),
-    },
-    userId: {
-      type: DataTypes.STRING(20),
-      allowNull: false,
-      unique: true,
-    },
-    password: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-    }
-  }, {
+Member.init({
+  m_id: {
+    type: DataTypes.STRING(30),
+    allowNull: false,
+    unique: true,
+  },
+  m_pwd: {
+    type: DataTypes.STRING(150),
+    allowNull: false,
+  },
+  m_name: {
+    type: DataTypes.STRING(30),
+    allowNull: false,
+  },
+  point: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
+  is_join: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false,
+  },
+}, {
     sequelize,
-    modelName: 'User',
-    tableName: 'user',
+    modelName: 'Member',
+    tableName: 'member',
     charset: 'utf8',
     collate: 'utf8_general_ci',
-  });
+});
   
-  export const associate = (db: dbType) => {
-    db.User.hasMany(db.Post, { as: 'Posts' });
-    db.User.hasMany(db.Comment);
-    db.User.belongsToMany(db.Post, { through: 'Like', as: 'Liked' });
-    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followers', foreignKey: 'followingId' });
-    db.User.belongsToMany(db.User, { through: 'Follow', as: 'Followings', foreignKey: 'followerId' });
-  };
+export const associate = (db: dbType) => {
+  db.Member.belongsToMany(db.Record, { through: 'Attend' });
+};
   
-  export default User;
+export default Member;

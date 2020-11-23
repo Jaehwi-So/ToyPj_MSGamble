@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MSCL</title>
-</head>
-<body>
-    main
-</body>
-</html>
+{% extends 'layout.html' %}
+{% block style %}
+
+{% endblock %}
+{% block main_content %}
+<h1>미디어솔루션 카트라이더 간식내기</h1>
+{% endblock %}
+{% block script %}
+<script>
+    //경고창 표시
+    if('{{warn}}' && '{{warn}}' != ''){
+        alert('{{warn}}');
+    }
+</script>
+{% endblock %}

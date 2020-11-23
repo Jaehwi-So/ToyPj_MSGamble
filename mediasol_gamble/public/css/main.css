@@ -1,3 +1,17 @@
 *{margin : 0; padding : 0}
 ul{list-style: none;} 
 a{text-decoration: none;} 
+.btn_m {
+    display: inline-block;
+    padding: 0 4px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 3px;
+    background: white;
+    border: 1.2px solid darkgray;
+    color: black;
+    height: 24px;
+    line-height: 24px;
+    vertical-align: top;
+    font-size: 15px;
+}

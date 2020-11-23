@@ -1,0 +1,119 @@
+{% extends 'layout.html' %}
+{% block style %}
+<style>
+    #page_title{
+        font-size : 25px;
+        font-family: 'Do Hyeon';
+        text-align : center;
+        margin-bottom : 15px;
+    }
+    #page_content{
+        width : 700px;
+        margin : auto;
+        margin-top : 15px;
+        overflow : hidden;
+        text-align : center;
+    }
+    #page_content #left_page{
+        width : 300px;
+        margin : auto;
+        margin-top : 15px;
+        overflow : hidden;
+        float : left;
+        padding : 10px;
+        text-align : center;
+    }
+    #page_content #right_page{
+        width : 300px;
+        margin : auto;
+        margin-top : 15px;
+        overflow : hidden;
+        float : right;
+        padding : 10px;
+        text-align : center;
+    }
+    #page_content #left_page table{
+        margin : 15px auto;
+        border-collapse : collapse;
+    }
+    #page_content #left_page table tr th{
+        background-color: lightgray;
+        border-top : 1px solid black;
+        border-bottom : 1px solid black;
+        font-size : 13px;
+        padding : 6px 3px;
+    }
+    #page_content #left_page table tr td{
+        background-color: white;
+        border-bottom : 1px solid black;
+        padding : 6px 3px;
+        font-size : 10px;
+        text-overflow:ellipsis;
+    }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { width: 25%; display: inline-block; }
+    .input-group input { width: 50%; font-size: 18px;}
+</style>
+{% endblock %}
+{% block main_content %}
+<div id="page_title">경기 기록</div><hr>
+<div id="page_content">
+    <div id="left_page">
+        <h3>경기 진행일 : 11/23 ~ 11/30</h3>
+        <table>
+            <tr>
+                <th width="130">참여자</th>
+                <th width="160">누적 포인트</th>
+            </tr>
+        </table>
+        <p>현재 경기에 참여하고 있지 않습니다!</p>
+        <button class="btn_m" onclick="attend_match();">경기 참여</button>
+    </div>
+    <div id="right_page">
+        ㅁㅁㅁ
+    </div>
+</div>    
+{% endblock %}
+{% block script %}
+<script>
+    /* 회원가입 클릭 이벤트 */
+    const join_check = (f) => {
+        //가입 데이터 유효성 체크
+        const id_exp = /^[0-9a-z]+$/;
+        const pwd_exp = /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).{6,20}$/
+        const str_exp = /^[a-zA-Zㄱ-힣0-9]*$/;
+        if( (f.m_id.value.length < 7 || f.m_id.value.length > 15) || !id_exp.test(f.m_id.value)){
+            alert("아이디는 7-15자리의 영문과 숫자로 입력해주세요");
+            return;
+        }
+        if( (f.m_pwd.value.length < 6 || f.m_pwd.value.length > 20) || !pwd_exp.test(f.m_pwd.value) ){
+            alert("비밀번호는 숫자, 특문을 포함한 6-20자리로 입력해주세요");
+            return;
+        }
+        if( f.m_name.value.length < 1){
+            alert("이름을 입력해주세요");
+            return;
+        }
+        var form = $("#join_form").serializeObject();
+        axios.post('/member', form)
+        .then((res) => {
+            const result = res.data.res;
+            if (result == 'existID') {
+              alert('이미 존재하는 아이디입니다.');
+              return;
+            }
+            if (result == 'success') {
+              alert('회원가입이 완료되었습니다.');
+              location.href="/";
+              return;
+            }
+            alert('회원가입 중 문제가 발생했습니다.');
+            location.href="/";
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    }
+</script>
+    
+{% endblock %}
