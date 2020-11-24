@@ -8,14 +8,14 @@
         margin-bottom : 15px;
     }
     #page_content{
-        width : 700px;
+        width : 750px;
         margin : auto;
         margin-top : 15px;
         overflow : hidden;
         text-align : center;
     }
     #page_content #left_page{
-        width : 300px;
+        width : 350px;
         margin : auto;
         margin-top : 15px;
         overflow : hidden;
@@ -24,7 +24,7 @@
         text-align : center;
     }
     #page_content #right_page{
-        width : 300px;
+        width : 350px;
         margin : auto;
         margin-top : 15px;
         overflow : hidden;
@@ -32,22 +32,27 @@
         padding : 10px;
         text-align : center;
     }
-    #page_content #left_page table{
+    #member_box{
+        padding : 15px;
+        height : 600px;
+        overflow : auto;
+    }
+    #member_list{
         margin : 15px auto;
         border-collapse : collapse;
     }
-    #page_content #left_page table tr th{
+    #member_list tr th{
         background-color: lightgray;
         border-top : 1px solid black;
         border-bottom : 1px solid black;
-        font-size : 13px;
+        font-size : 14px;
         padding : 6px 3px;
     }
-    #page_content #left_page table tr td{
+    #member_list tr td{
         background-color: white;
         border-bottom : 1px solid black;
         padding : 6px 3px;
-        font-size : 10px;
+        font-size : 12px;
         text-overflow:ellipsis;
     }
     .input-group { margin-bottom: 15px; }
@@ -59,15 +64,21 @@
 <div id="page_title">경기 기록</div><hr>
 <div id="page_content">
     <div id="left_page">
-        <h3>경기 진행일 : 11/23 ~ 11/30</h3>
-        <table>
-            <tr>
-                <th width="130">참여자</th>
-                <th width="160">누적 포인트</th>
-            </tr>
-        </table>
+        <h3 id="date_info">경기 진행일 : 11/23 ~ 11/30</h3>
+        <div id="member_box">
+            <table id="member_list">
+                <tr>
+                    <th width="160">참여자</th>
+                    <th width="160">누적 포인트</th>
+                </tr>
+            </table>
+        </div>
+        {% if member.is_join == false %}
         <p>현재 경기에 참여하고 있지 않습니다!</p>
         <button class="btn_m" onclick="attend_match();">경기 참여</button>
+        {% else %}
+        <p>현재 경기에 참여중입니다.</p>
+        {% endif %}
     </div>
     <div id="right_page">
         ㅁㅁㅁ
@@ -76,44 +87,64 @@
 {% endblock %}
 {% block script %}
 <script>
-    /* 회원가입 클릭 이벤트 */
-    const join_check = (f) => {
-        //가입 데이터 유효성 체크
-        const id_exp = /^[0-9a-z]+$/;
-        const pwd_exp = /^(?=.*[a-zA-Z])((?=.*\d)|(?=.*\W)).{6,20}$/
-        const str_exp = /^[a-zA-Zㄱ-힣0-9]*$/;
-        if( (f.m_id.value.length < 7 || f.m_id.value.length > 15) || !id_exp.test(f.m_id.value)){
-            alert("아이디는 7-15자리의 영문과 숫자로 입력해주세요");
-            return;
+$(function(){
+    get_record_data('/record/cur');
+});
+
+const get_record_data = (url) => {
+    axios.get(url)
+    .then((res) => {  
+        const list = document.getElementById('member_list');
+        list.innerHTML = '<tr><th width="160">참여자 </th><th width="160">누적 포인트</th><th width="90">점수변경</th>';
+        if(res.data.result == 'success'){
+            const members = res.data.members;
+            members.map((x) => {
+                const tableTr = document.createElement('tr');
+                const nameTd = document.createElement('td');
+                const pointTd = document.createElement('td');
+                const btnTd = document.createElement('td');
+                const btn_operate = document.createElement('button')
+                btn_operate.textContent = "변경"
+                btn_operate.className = "btn_m";
+                //버튼 클릭시 이벤트리스너 추가
+                btn_operate.addEventListener('click', () => { 
+                    location.href= "/team/" + x.id;
+                });
+                btnTd.appendChild(btn_operate);
+                nameTd.textContent = x.m_name;
+                pointTd.textContent = x.point;
+                tableTr.appendChild(nameTd);
+                tableTr.appendChild(pointTd);
+                tableTr.appendChild(btnTd);
+
+                tableTr.addEventListener('click', () => { 
+                    
+                });
+                list.appendChild(tableTr);
+            });
+            document.getElementById('date_info').innerHTML = `현재 내기 기간 <br> ${res.data.record.startDate} ~<br> ${res.data.record.endDate} &nbsp;&nbsp;`
+        }   
+        else{
+            alert('검색 결과가 없습니다.');
         }
-        if( (f.m_pwd.value.length < 6 || f.m_pwd.value.length > 20) || !pwd_exp.test(f.m_pwd.value) ){
-            alert("비밀번호는 숫자, 특문을 포함한 6-20자리로 입력해주세요");
-            return;
+    })
+    .catch((err) => {
+        console.error(err);
+    });    
+}
+
+const attend_match = () => {
+    axios.post('/record/attend/{{member.id}}')
+    .then((res) => {
+        if(res.data.result == 'success'){
+            alert('이번주 내기에 참가합니다!');
+            location.reload();
         }
-        if( f.m_name.value.length < 1){
-            alert("이름을 입력해주세요");
-            return;
+        else{
+            alert('참가에 실패했습니다.')
         }
-        var form = $("#join_form").serializeObject();
-        axios.post('/member', form)
-        .then((res) => {
-            const result = res.data.res;
-            if (result == 'existID') {
-              alert('이미 존재하는 아이디입니다.');
-              return;
-            }
-            if (result == 'success') {
-              alert('회원가입이 완료되었습니다.');
-              location.href="/";
-              return;
-            }
-            alert('회원가입 중 문제가 발생했습니다.');
-            location.href="/";
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-    }
+    });
+}
 </script>
     
 {% endblock %}

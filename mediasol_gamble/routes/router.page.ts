@@ -15,7 +15,7 @@ class PageRoute implements Route {
         this.router.get('/', PageController.go_main_page);  //메인 페이지 이동 = GET:/  (*/view)
         this.router.get('/page/login', MiddlewareController.isNotLoggedIn, PageController.go_login_page);   //로그인 페이지 이동 = GET:/page/login (*/view)
         this.router.get('/page/join', MiddlewareController.isNotLoggedIn, PageController.go_join_page); //회원가입 페이지 이동 = GET:/page/join (*/view)
-        this.router.get('/page/record', PageController.go_record_page); //경기기록 페이지 이동 = GET:/page/record (*/view)
+        this.router.get('/page/record', MiddlewareController.isLoggedIn, PageController.go_record_page); //경기기록 페이지 이동 = GET:/page/record (*/view)
     }
 }
 

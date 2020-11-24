@@ -31,7 +31,7 @@ Log.init({
 }, {
     sequelize,
     modelName: 'Log',
-    tableName: 'log',
+    tableName: 'logs',
     charset: 'utf8',
     collate: 'utf8_general_ci',
 });

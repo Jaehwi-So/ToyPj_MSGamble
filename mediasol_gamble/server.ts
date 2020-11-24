@@ -4,12 +4,13 @@ import App from "./app";
 /* Router list import */
 import PageRouter from "./routes/router.page"
 import MemberRouter from "./routes/router.member"
-
+import RecordRouter from "./routes/router.record"
 
 const application = new App(
   [
     new PageRouter(),
-    new MemberRouter()
+    new MemberRouter(),
+    new RecordRouter(),
   ]
 );
 

@@ -10,6 +10,7 @@ import fs from 'fs';
 import Routers from './routes/routerImpl';
 import passport from 'passport';
 import passportConfig from './passport';
+import RecordController from "./controller/controller.record"
 
 class App {
     public app: express.Application;
@@ -54,6 +55,9 @@ class App {
         else{
             this.app.use(morgan('dev'));
         }
+
+        //db 초기화
+        RecordController.init_record();
     }
 
     /* 미들웨어 연결 */ 

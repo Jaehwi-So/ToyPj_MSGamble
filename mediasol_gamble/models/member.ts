@@ -12,7 +12,7 @@ class Member extends Model {
   public m_pwd!: string;  //비밀번호
   public m_name!: string; //이름
   public point!: number;  //현재 포인트
-  public is_join!: number;  //현재경기 참여여부
+  public is_join!: boolean;  //현재경기 참여여부
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -44,7 +44,7 @@ Member.init({
 }, {
     sequelize,
     modelName: 'Member',
-    tableName: 'member',
+    tableName: 'members',
     charset: 'utf8',
     collate: 'utf8_general_ci',
 });

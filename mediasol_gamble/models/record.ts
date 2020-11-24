@@ -3,6 +3,7 @@ import {
   BelongsToManyRemoveAssociationMixin, BelongsToManyAddAssociationMixin,
 } from 'sequelize';
 import { dbType } from './index';
+import Member from './member';
 import { sequelize } from './sequelize';
   
 class Record extends Model {
@@ -13,6 +14,10 @@ class Record extends Model {
   public is_active!: boolean; //경기 활성화 여부
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
+
+  public getMembers!: BelongsToManyGetAssociationsMixin<Member>;
+  public addMembers!: BelongsToManyAddAssociationMixin<Member, number>;
+  public addMember!: BelongsToManyAddAssociationMixin<Member, number>;
 }
   
 Record.init({
@@ -36,7 +41,7 @@ Record.init({
 }, {
     sequelize,
     modelName: 'Record',
-    tableName: 'record',
+    tableName: 'records',
     charset: 'utf8',
     collate: 'utf8_general_ci',
 });

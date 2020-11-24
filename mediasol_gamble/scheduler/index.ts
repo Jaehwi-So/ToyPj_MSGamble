@@ -1,11 +1,20 @@
 import schedule from 'node-schedule';
+import RecordController from "../controller/controller.record"
 
 class TimeScheduler {
     constructor() {
 
     }
-    private test = schedule.scheduleJob('0 30 17 * * *', () => {
-        console.log('매 5시 30분에 실행');
+    /*
+    private recordInit = schedule.scheduleJob('0 0 0 * * 1', () => {
+        RecordController.init_record();
+        console.log('월요일 0시 0분 0초마다 초기화');
+    });
+    */
+
+    private recordInit = schedule.scheduleJob('0 0 0 * * *', () => {
+        RecordController.init_record();
+        console.log('매일 0시 0분 0초마다 초기화');
     });
 }
 
