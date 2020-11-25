@@ -11,8 +11,8 @@ class MemberRoute implements Route {
     }
 
     private routerInit = () => {
-        this.router.get(`${this.url}/cur`, RecordController.get_cur_record);  //현재 활성화된 기록 가져오기 = GET:/record/cur ( /JSON)
-        this.router.post(`${this.url}/attend/:id`, MiddlewareController.isLoggedIn, RecordController.join_gamble);  //현재 내기에 참여요청 = POST:/record/attend ( /JSON)
+        this.router.get(`${this.url}/current`, RecordController.get_cur_record);  //현재 활성화된 기록 가져오기 = GET:/record/current (*/JSON)
+        this.router.post(`${this.url}/attend/:id`, MiddlewareController.isLoggedIn, RecordController.join_gamble);  //현재 내기에 참여요청 = POST:/record/attend (*/JSON)
 
     }
 }

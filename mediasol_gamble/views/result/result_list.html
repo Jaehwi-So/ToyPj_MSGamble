@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+{% block style %}
+<style>
+    #page_title{
+        font-size : 35px;
+        font-family: 'Do Hyeon';
+        text-align : center;
+        margin-bottom : 15px;
+    }
+    #page_content{
+        width : 750px;
+        margin : auto;
+        margin-top : 15px;
+        overflow : hidden;
+        text-align : center;
+    }
+    #result_box{
+        margin : 10px auto;
+    }
+    #result_list{
+        border-collapse : collapse;
+        margin : 10px auto;
+    }
+    #result_list tr th{
+        background-color: lightgray;
+        border : 1px solid black;
+        font-size : 14px;
+        padding : 6px 3px;
+    }
+    #result_list tr td{
+        background-color: white;
+        border-top : 1px solid black;
+        border-bottom : 1px solid black;
+        border-left : 1px dotted black;
+        border-right : 1px dotted black;
+        padding : 6px 3px;
+        font-size : 12px;
+        text-overflow:ellipsis;
+    }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { width: 25%; display: inline-block; }
+    .input-group input { width: 50%; font-size: 18px;}
+</style>
+{% endblock %}
+{% block main_content %}
+<div id="page_title">명예의 전당</div><hr>
+<div id="page_content">
+    <div id="result_box">
+        <table id="result_list">
+            <tr>
+                <th width="250">내기 기간</th>
+                <th width="200">당첨자</th>
+                <th width="120">상세보기</th>
+            </tr>
+            <tr>
+                <td>2015</td>
+                <td>김재휘</td>
+                <td>상세보기</td>
+            </tr>
+        </table>
+    </div>
+</div>    
+{% endblock %}
+{% block script %}
+<script>
+/* 페이지 load시 실행 */
+$(function(){
+    //get_record_list('/record'); //전체 record 데이터를 가져옴
+});
+
+
+</script>
+    
+{% endblock %}

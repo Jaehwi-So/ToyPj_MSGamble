@@ -9,24 +9,23 @@ class Log extends Model {
   public readonly id!: number;
   public main_log!: string; //주요 메세지
   public sub_log!: string;  //부가 메세지
-  public is_active!: boolean; //활성화 여부
+  public log_type!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
   
 Log.init({
   main_log: {
-    type: DataTypes.BLOB,
+    type: DataTypes.TEXT,
     allowNull: false,
   },
   sub_log: {
-    type: DataTypes.BLOB,
+    type: DataTypes.TEXT,
     allowNull: true,
   },
-  is_active: {
-    type: DataTypes.BOOLEAN,
+  log_type: {
+    type: DataTypes.STRING,
     allowNull: false,
-    defaultValue: true,
   },
 }, {
     sequelize,

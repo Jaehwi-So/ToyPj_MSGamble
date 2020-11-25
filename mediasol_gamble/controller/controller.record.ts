@@ -1,11 +1,10 @@
 import { RequestHandler, ErrorRequestHandler, Request, Response, NextFunction } from 'express';
 import Controller from './controllerImpl';
-import bcrypt from 'bcrypt';
 import Member from '../models/member';
 import Record from '../models/record';
-import passport from 'passport';
+import Log from '../models/log';
 import { Op } from 'sequelize';
-import { Template } from 'nunjucks';
+
 
 class RecordController implements Controller {
     constructor() {
@@ -21,8 +20,8 @@ class RecordController implements Controller {
         nowYear += (nowYear < 2000) ? 1900 : 0;
         const weekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek + 1);
         //const weekEndDate = new Date(nowYear, nowMonth, nowDay + (8 - nowDayOfWeek));
-        //const weekEndDate = new Date(Date.now() + 20000); //use test : +20sec
-        const weekEndDate = new Date(nowYear, nowMonth, nowDay + 1);   //use test : +1day
+        const weekEndDate = new Date(Date.now() + 1200000); //use test : +20min
+        //const weekEndDate = new Date(nowYear, nowMonth, nowDay + 1);   //use test : +1day
         let result = [];
         result[0] = weekStartDate;
         result[1] = weekEndDate;
@@ -77,7 +76,7 @@ class RecordController implements Controller {
                 else{
                     record.update({
                         is_active : false,
-                        winMember : -1
+                        winMember : 'no'
                     });
                 }
             }
@@ -116,22 +115,24 @@ class RecordController implements Controller {
     /* 현재 진행중인 내기 정보 가져오기 */
     public get_cur_record = async (req: Request, res: Response, next: NextFunction) => {
         try{
+            //현재 활성화된 기록
             const record = await Record.findOne({
                 where : {
                     is_active : true,
                 },
                 order: [['startDate', 'DESC']],
             });
-
-            if(record){
+            //현재 활성화된 기록 존재 시
+            if(record){ 
                 const members = await record.getMembers({
                     order: [['point', 'DESC']],
-                })
-                console.log()
+                }); //현재 기록에 associate된 멤버들 목록 read
                 return res.json({result : 'success', record, members});
             }
-
-            return res.json({result : 'fail'});
+            //활성화된 기록이 존재하지 않을 시
+            else{   
+                return res.json({result : 'fail'});
+            }
         }
         catch(err){
             return res.json({ result: `fail` });
@@ -142,23 +143,45 @@ class RecordController implements Controller {
     public join_gamble  = async (req: Request, res: Response, next: NextFunction) => {
         const id : number = parseInt(req.params.id);
         try {
+            // 요청 대상 id와 세션 id가 일치하지 않는 경우
+            if(!req.user || id != req.user.id){
+                return res.json({ result: 'fail' });  
+            }
+            // 세션 id와 일치하는 경우
+
             const record = await Record.findOne({
                 where : {
                     is_active : true,
                 },
                 order: [['startDate', 'DESC']],
-            });
-            await Member.update({
-                is_join : true,
-                point : 0
-            },{
+            }); //현재 활성화된 기록
+            const member = await Member.findOne({
                 where : { 
                     id,
                     is_join : false
                 }
-            })
-            record!.addMember(id);
-            return res.json({ result: 'success' });  
+            }); //join 상태가 아닌 참여 대상 멤버
+
+            //활성화된 기록과 대상 멤버가 둘 다 존재하는 경우
+            if(member && record){
+                //멤버의 참여여부 변경
+                await member.update({
+                    is_join : true,
+                    point : 0
+                });
+                //로그 남기기
+                await Log.create({
+                    main_log : '새로운 멤버가 이번주 내기에 입장하였습니다.',
+                    sub_log : `${member.m_name}님이 참가합니다.`,
+                    log_type : 'join',
+                    RecordId : record.id,
+                });
+
+                //기록 테이블에 외래키로 추가
+                record!.addMember(id);
+                return res.json({ result: 'success' });  
+            }
+            return res.json({ result: 'fail' });  
         } 
         catch (error) {
             console.error(error);

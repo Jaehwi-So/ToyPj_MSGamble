@@ -13,7 +13,8 @@ class MemberRoute implements Route {
     private routerInit = () => {
         this.router.post(`${this.url}/`, MiddlewareController.isNotLoggedIn, MemberController.create_member);  //회원가입 요청 = POST:/member (JSON/JSON)
         this.router.post(`${this.url}/login`, MiddlewareController.isNotLoggedIn, MemberController.login_member);  //로그인 요청 = POST:/member/login (JSON/JSON)
-        this.router.post(`${this.url}/logout`, MiddlewareController.isLoggedIn, MemberController.logout_member);  //로그아웃 요청 = POST:/member/logout (JSON/JSON)
+        this.router.post(`${this.url}/logout`, MiddlewareController.isLoggedIn, MemberController.logout_member);  //로그아웃 요청 = POST:/member/logout (*/JSON)
+        this.router.put(`${this.url}/point/:id`, MiddlewareController.isLoggedIn, MemberController.modify_point);  //포인트 변경 요청 = PUT:/member/point/:id (*/JSON)
     }
 }
 

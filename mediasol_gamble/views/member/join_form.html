@@ -59,6 +59,7 @@
             return;
         }
         var form = $("#join_form").serializeObject();
+        //가입 ajax 요청
         axios.post('/member', form)
         .then((res) => {
             const result = res.data.res;

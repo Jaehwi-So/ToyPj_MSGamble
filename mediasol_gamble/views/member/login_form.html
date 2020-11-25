@@ -36,8 +36,10 @@
 {% endblock %}
 {% block script %}
 <script>
+    /* 로그인 버튼 클릭 */
     const login = () => {
         var form = $("#login_form").serializeObject();
+        //로그인 ajax 요청
         axios.post('/member/login', form)
         .then((res) => {
             const result = res.data.result;

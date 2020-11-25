@@ -8,7 +8,7 @@ export * from './sequelize';
 const db = {
   Member,
   Record,
-  Log
+  Log,
 };
 
 export type dbType = typeof db;

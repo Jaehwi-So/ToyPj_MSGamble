@@ -104,9 +104,9 @@
         </div>
         <div id="head_navi">
             <ul>
-                <li><a href="/page/record" class="navi_left">경기 기록 보기</a></li>
+                <li><a href="/page/record" class="navi_left">내기 기록 보기</a></li>
                 <li><a href="#">점수 갱신</a></li>
-                <li><a href="#">명예의 전당</a></li>
+                <li><a href="/page/result">명예의 전당</a></li>
             </ul>
         </div>
     </header>
@@ -117,10 +117,12 @@
         </div>
     </main>
     <script>
+        /* 로그인 페이지 이동 */
         const main_login_page = () => {
             location.href="/page/login"
         };
 
+        /* 로그아웃 페이지 이동 */
         const main_logout_page = () => {
             axios.post('/member/logout')
             .then((res) => {
@@ -138,7 +140,7 @@
                 location.href="/";
             });
         };
-
+        /* 회원가입 페이지 이동 */
         const main_join_page = () => {
             location.href="/page/join"
         };

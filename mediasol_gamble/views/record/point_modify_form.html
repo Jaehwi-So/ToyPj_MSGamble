@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>포인트 변경</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link href='https://fonts.googleapis.com/css?family=Do+Hyeon' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="/js/jquery.js"></script>
+    <script type="text/javascript" src="/js/main.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        #page_title{
+            font-size : 40px;
+            font-family: 'Do Hyeon';
+            text-align : center;
+            margin-bottom : 15px;
+        }
+        #page_content{
+            width : 500px;
+            margin : auto;
+            margin-top : 20px;
+            overflow : hidden;
+            text-align : center;
+        }
+    </style>
+</head>
+<body>
+    <div id='page_content'>
+        <div id='page_title'>
+            {{target.m_name}}님의 포인트 변경
+        </div>
+        <h3>현재 누적 포인트 : {{target.point}}</h3><br><hr><br>
+        <button class="btn_xl" onclick="increase_point('{{target.id}}')">포인트 증가</button>
+        <button class="btn_xl" onclick="decrease_point('{{target.id}}')">포인트 감소</button><br><br>
+        <button class="btn_xl" onclick="cancel()">취소</button>
+    </div>
+    <script>
+        /* 유효하지 않은 요청인 경우 */
+        if('{{result}}' != 'success'){
+            alert('{{message}}');
+            location.href='/';
+            window.close();
+        }
+
+        /* 포인트 증가 클릭 */
+        const increase_point = (target) => {
+            //포인트 증가 요청 ajax
+            axios.put(`/member/point/${target}?action=increase`)
+            .then((res) => {
+                const result = res.data.result;
+                if (result == 'success') {
+                    alert('포인트를 증가시켰습니다.');
+                }
+                else {
+                    alert('요청에 실패했습니다.');
+                }
+                location.href="/";
+                window.close();
+                opener.location.reload();
+            })
+            .catch((err) => {
+                console.error(err);
+                location.href="/";
+                window.close();
+                opener.location.reload();
+            });
+        }
+
+        /* 포인트 감소 클릭 */
+        const decrease_point = (target) => {
+            //포인트 감소 요청 ajax
+            axios.put(`/member/point/${target}?action=decrease`)
+            .then((res) => {
+                const result = res.data.result;
+                if (result == 'success') {
+                    alert('포인트를 감소시켰습니다.');
+                }
+                else {
+                    alert('요청에 실패했습니다.');
+                }
+                location.href="/";
+                window.close();
+                opener.location.reload();
+            })
+            .catch((err) => {
+                console.error(err);
+                location.href="/";
+                window.close();
+                opener.location.reload();
+            });
+        }
+        /* 취소 버튼 클릭 */
+        const cancel = () => {
+            location.href="/";
+            window.close();
+            opener.location.reload();
+        }
+    </script>
+</body>
+</html>

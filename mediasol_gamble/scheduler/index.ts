@@ -12,7 +12,7 @@ class TimeScheduler {
     });
     */
 
-    private recordInit = schedule.scheduleJob('0 0 0 * * *', () => {
+    private recordInit = schedule.scheduleJob('0 0 12 * * *', () => {
         RecordController.init_record();
         console.log('매일 0시 0분 0초마다 초기화');
     });

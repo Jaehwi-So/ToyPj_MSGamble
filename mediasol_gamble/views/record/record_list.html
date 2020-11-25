@@ -2,7 +2,7 @@
 {% block style %}
 <style>
     #page_title{
-        font-size : 25px;
+        font-size : 35px;
         font-family: 'Do Hyeon';
         text-align : center;
         margin-bottom : 15px;
@@ -33,7 +33,6 @@
         text-align : center;
     }
     #member_box{
-        padding : 15px;
         height : 600px;
         overflow : auto;
     }
@@ -55,16 +54,62 @@
         font-size : 12px;
         text-overflow:ellipsis;
     }
+    #date_info{
+        font-size : 14px;
+        padding-top : 5px;
+        font-weight : bold;
+        color : blue;
+    }
+    #log_list{
+        padding : 15px;
+        width : 300px;
+        height : 700px;
+        overflow : auto;
+        margin : 10px auto;
+        border : 1px solid black;
+        background-color: rgb(240, 240, 240);
+    }
+    .log_join{
+        width : 270px;
+        font-size : 13px;
+        padding : 10px;
+        margin : 10px auto;
+        border : 1px dotted black;
+        background-color : rgb(252, 231, 234);
+    }
+    .log_increase{
+        width : 270px;
+        font-size : 13px;
+        padding : 10px;
+        margin : 10px auto;
+        border : 1px dotted black;
+        background-color : lightcyan;
+    }
+    .log_decrease{
+        width : 270px;
+        font-size : 13px;
+        padding : 10px;
+        margin : 10px auto;
+        border : 1px dotted black;
+        background-color : lightyellow;
+    }
+    h2{
+        font-family : 'Do Hyeon';
+        font-weight : normal;
+    }
     .input-group { margin-bottom: 15px; }
     .input-group label { width: 25%; display: inline-block; }
     .input-group input { width: 50%; font-size: 18px;}
 </style>
 {% endblock %}
 {% block main_content %}
-<div id="page_title">경기 기록</div><hr>
+<div id="page_title">내기 기록</div><hr>
 <div id="page_content">
     <div id="left_page">
-        <h3 id="date_info">경기 진행일 : 11/23 ~ 11/30</h3>
+        <h2>현재 내기 기간</h2>
+        <p id="date_info"></p>
+        <br><hr><br>
+        <h2>참여자 목록</h2>
         <div id="member_box">
             <table id="member_list">
                 <tr>
@@ -74,24 +119,32 @@
             </table>
         </div>
         {% if member.is_join == false %}
-        <p>현재 경기에 참여하고 있지 않습니다!</p>
+        <h2>현재 경기에 참여하고 있지 않습니다!</h2>
         <button class="btn_m" onclick="attend_match();">경기 참여</button>
         {% else %}
-        <p>현재 경기에 참여중입니다.</p>
+        <h2>현재 경기에 참여중입니다!</h2>
         {% endif %}
     </div>
     <div id="right_page">
-        ㅁㅁㅁ
+        <h2>기록</h2>
+        <div id="log_list">
+            <div class="log">
+            </div>
+        </div>
     </div>
 </div>    
 {% endblock %}
 {% block script %}
 <script>
+/* 페이지 load시 실행 */
 $(function(){
-    get_record_data('/record/cur');
+    get_record_data('/record/current'); //record 데이터를 가져옴
+    get_log_data('/log/current');   //log 데이터를 가져옴
 });
 
+/* record 데이터 가져오기 */
 const get_record_data = (url) => {
+    //record 데이터 ajax 요청
     axios.get(url)
     .then((res) => {  
         const list = document.getElementById('member_list');
@@ -108,7 +161,7 @@ const get_record_data = (url) => {
                 btn_operate.className = "btn_m";
                 //버튼 클릭시 이벤트리스너 추가
                 btn_operate.addEventListener('click', () => { 
-                    location.href= "/team/" + x.id;
+                    operate_point(x.id);
                 });
                 btnTd.appendChild(btn_operate);
                 nameTd.textContent = x.m_name;
@@ -117,12 +170,56 @@ const get_record_data = (url) => {
                 tableTr.appendChild(pointTd);
                 tableTr.appendChild(btnTd);
 
-                tableTr.addEventListener('click', () => { 
-                    
-                });
                 list.appendChild(tableTr);
             });
-            document.getElementById('date_info').innerHTML = `현재 내기 기간 <br> ${res.data.record.startDate} ~<br> ${res.data.record.endDate} &nbsp;&nbsp;`
+            document.getElementById('date_info').innerHTML = `${res.data.record.startDate} ~ ${res.data.record.endDate}`
+        }   
+        else{
+            alert('검색 결과가 없습니다.');
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+    });    
+}
+
+/* log 데이터 가져오기 */
+const get_log_data = (url) => {
+    //log 데이터 ajax 요청
+    axios.get(url)
+    .then((res) => {  
+        const list = document.getElementById('log_list');
+        list.innerHTML = ""
+        if(res.data.result == 'success'){
+            const logs = res.data.logs;
+            logs.map((x) => {
+                const logDiv = document.createElement('div');
+                if(x.log_type == 'increase'){
+                    logDiv.className = "log_increase"
+                }
+                else if(x.log_type == 'decrease'){
+                    logDiv.className = "log_decrease"
+                }
+                else{
+                    logDiv.className = "log_join"
+                }
+                const timeP = document.createElement('p');
+                timeP.style = "font-size : 11px; color : blue"
+                timeP.textContent = x.createdAt;
+                const logMainP = document.createElement('p');
+                logMainP.style = "font-size : 15px; font-family : 'Do Hyeon'"
+                logMainP.textContent = x.main_log;
+                const logSubP = document.createElement('p');
+                logSubP.style = "font-size : 13px;"
+                logSubP.textContent = x.sub_log;
+
+                logDiv.appendChild(timeP);
+                logDiv.appendChild(logMainP);
+                logDiv.appendChild(logSubP);
+                list.appendChild(logDiv);
+            });
+            const loglist_init = document.getElementById("log_list"); 
+            loglist_init.scrollTop = loglist_init.scrollHeight;
         }   
         else{
             alert('검색 결과가 없습니다.');
@@ -144,6 +241,10 @@ const attend_match = () => {
             alert('참가에 실패했습니다.')
         }
     });
+}
+
+const operate_point = (id) => {
+    window.open(`/page/member/point/${id}`, "포인트 변경", "toolbar=yes, resizable=yes, width=550, height=350, top=200, left=300");
 }
 </script>
     

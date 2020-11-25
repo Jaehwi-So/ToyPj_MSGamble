@@ -55,16 +55,17 @@ class App {
         else{
             this.app.use(morgan('dev'));
         }
-
-        //db 초기화
+        //db record table init
         RecordController.init_record();
+
+        //port setting 
+        this.app.set('port', process.env.PORT || 8001);  
     }
 
     /* 미들웨어 연결 */ 
     public initMiddlewares = () => {
-        dotenv.config();
-        passportConfig();
-        this.app.set('port', process.env.PORT || 8001);  //port
+        dotenv.config();    //dotenv config
+        passportConfig();   //passport config
         this.app.set('view engine', 'html'); //view engine
         nunjucks.configure('views', {   //template : nunjucks
             express: this.app,
@@ -77,6 +78,7 @@ class App {
         this.app.use(express.static(path.join(__dirname, 'public')));
         this.app.use('/img', express.static(path.join(__dirname, 'uploads')));
 
+        //cookie-parser
         this.app.use(cookieParser(process.env.COOKIE_SECRET));
 
         //session

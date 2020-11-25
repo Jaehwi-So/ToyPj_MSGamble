@@ -10,13 +10,13 @@ export default () => {
     passwordField: 'm_pwd',
   }, async (m_id, m_pwd, done) => {
     try {
-      const member = await Member.findOne({ where: { m_id } });
-      if (!member) {
+      const user = await Member.findOne({ where: { m_id } });
+      if (!user) {
         return done(null, false, { message: 'errID' });
       }
-      const result = await bcrypt.compare(m_pwd, member.m_pwd);
+      const result = await bcrypt.compare(m_pwd, user.m_pwd);
       if (result) {
-        return done(null, member);
+        return done(null, user);
       }
       return done(null, false, { message: 'errPwd' });
     } catch (err) {
