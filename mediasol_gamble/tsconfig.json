@@ -71,6 +71,5 @@
       "./node_modules/@types"
     ]
   },
-  "exclude": ["src/**/*.ts"],
   "include": ["node_modules"]
 }

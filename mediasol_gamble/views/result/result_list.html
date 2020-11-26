@@ -47,17 +47,9 @@
 <div id="page_content">
     <div id="result_box">
         <table id="result_list">
-            <tr>
-                <th width="250">내기 기간</th>
-                <th width="200">당첨자</th>
-                <th width="120">상세보기</th>
-            </tr>
-            <tr>
-                <td>2015</td>
-                <td>김재휘</td>
-                <td>상세보기</td>
-            </tr>
+
         </table>
+        <div id="pager"></div>
     </div>
 </div>    
 {% endblock %}
@@ -67,7 +59,61 @@
 $(function(){
     //get_record_list('/record'); //전체 record 데이터를 가져옴
 });
+/* 페이지 load시 실행 */
+$(function(){
+    get_record_list('/record'); //record 데이터를 가져옴
+});
 
+/* record 리스트 데이터 가져오기 */
+const get_record_list = (url) => {
+    //record 데이터 ajax 요청
+    axios.get(url)
+    .then((res) => {  
+        const list = document.getElementById('result_list');
+        list.innerHTML = `            
+            <tr>
+                <th width="250">내기 기간</th>
+                <th width="200">당첨자</th>
+                <th width="120">상세보기</th>
+            </tr>`;
+        if(res.data.result == 'success'){
+            const records = res.data.records;
+            records.map((x) => {
+                const tableTr = document.createElement('tr');
+                const timeTd = document.createElement('td');
+                const winnerTd = document.createElement('td');
+                const btnTd = document.createElement('td');
+                const btn_detail = document.createElement('button')
+                btn_detail.textContent = "상세보기"
+                btn_detail.className = "btn_m";
+                //버튼 클릭시 이벤트리스너 추가
+                btn_detail.addEventListener('click', () => { 
+                    location.href = `/page/record/${x.id}`
+                });
+                btnTd.appendChild(btn_detail);
+                timeTd.textContent = `${x.startDate} - ${x.endDate}`;
+                timeTd.style = 'color : blue;'
+                let winName = x.winMember;
+                if(winName == 'no'){
+                    winName = '없음';
+                }
+                winnerTd.textContent = winName;
+                tableTr.appendChild(timeTd);
+                tableTr.appendChild(winnerTd);
+                tableTr.appendChild(btnTd);
+
+                list.appendChild(tableTr);
+            });
+            document.getElementById('pager').innerHTML = res.data.pager;
+        }   
+        else{
+            alert('결과가 없습니다.');
+        }
+    })
+    .catch((err) => {
+        console.error(err);
+    });    
+}
 
 </script>
     

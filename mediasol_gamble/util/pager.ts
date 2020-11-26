@@ -1,15 +1,15 @@
 class Pager{
     //let page = Pager.getPage(url, curPage, contentSize, pageSize, skipSize, rowTotal);
     //url, 쿼리 유무, 현재 페이지, 페이지 컨텐츠 수, 한 화면 페이지네이션 개수, 생략 컨텐츠 수, 총 로우 개수
-    static getPage = (pageURL, isQuery, curPage, contentSize, pageSize, skipSize, rowTotal, isAjax, ajaxF) => {
+    public static getPage = (pageURL : string , isQuery : boolean, curPage : number, contentSize : number, pageSize :number, skipSize : number, rowTotal : number, isAjax : boolean, ajaxF : string) => {
         try{
-            const start = ((Math.ceil(curPage / pageSize) - 1) * pageSize) + 1;   //페이지네이션 시작 번호
-            let end = (start + pageSize) - 1;   //페이지네이션 끝 번호
-            const total = Math.ceil(rowTotal / contentSize);    //페이지네이션 전체 수
+            const start : number = ((Math.ceil(curPage / pageSize) - 1) * pageSize) + 1;   //페이지네이션 시작 번호
+            let end : number = (start + pageSize) - 1;   //페이지네이션 끝 번호
+            const total : number = Math.ceil(rowTotal / contentSize);    //페이지네이션 전체 수
             if (end > total) end = total;
 
-            let isPrev = false;
-            let isNext = false;
+            let isPrev : boolean = false;
+            let isNext : boolean = false;
             if(end < total) isNext = true;
             if(start > 1) isPrev = true;
             //start, end, total, curPage

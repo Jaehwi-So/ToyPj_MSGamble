@@ -60,6 +60,11 @@
         font-weight : bold;
         color : blue;
     }
+    #winner_info{
+        font-size : 19px;
+        font-weight : bold;
+        font-family : sans-serif;
+    }
     #log_list{
         padding : 15px;
         width : 300px;
@@ -103,28 +108,20 @@
 </style>
 {% endblock %}
 {% block main_content %}
-<div id="page_title">내기 기록</div><hr>
+<div id="page_title">지난 내기 기록</div><hr>
 <div id="page_content">
     <div id="left_page">
-        <h2>현재 내기 기간</h2>
+        <h2>내기 기간</h2>
         <p id="date_info"></p>
         <br><hr><br>
         <h2>참여자 목록</h2>
         <div id="member_box">
             <table id="member_list">
-                <tr>
-                    <th width="160">참여자</th>
-                    <th width="160">누적 포인트</th>
-                </tr>
+
             </table>
         </div>
         <br><hr><br>
-        {% if member.is_join == false %}
-        <h2>현재 경기에 참여하고 있지 않습니다!</h2>
-        <button class="btn_m" onclick="attend_match();">경기 참여</button>
-        {% else %}
-        <h2>현재 경기에 참여중입니다!</h2>
-        {% endif %}
+        <h2>당첨자 : <span id="winner_info"></span></h2>
     </div>
     <div id="right_page">
         <h2>기록</h2>
@@ -139,8 +136,8 @@
 <script>
 /* 페이지 load시 실행 */
 $(function(){
-    get_record_data('/record/current'); //record 데이터를 가져옴
-    get_log_data('/log/current');   //log 데이터를 가져옴
+    get_record_data('/record/{{id}}'); //record 데이터를 가져옴
+    get_log_data('/log/{{id}}');   //log 데이터를 가져옴
 });
 
 /* record 데이터 가져오기 */
@@ -149,31 +146,18 @@ const get_record_data = (url) => {
     axios.get(url)
     .then((res) => {  
         const list = document.getElementById('member_list');
-        list.innerHTML = '<tr><th width="160">참여자 </th><th width="160">누적 포인트</th><th width="90">점수변경</th></tr>';
+        list.innerHTML = '<tr><th width="300">참여자 </th></tr>';
         if(res.data.result == 'success'){
             const members = res.data.members;
             members.map((x) => {
                 const tableTr = document.createElement('tr');
                 const nameTd = document.createElement('td');
-                const pointTd = document.createElement('td');
-                const btnTd = document.createElement('td');
-                const btn_operate = document.createElement('button')
-                btn_operate.textContent = "변경"
-                btn_operate.className = "btn_m";
-                //버튼 클릭시 이벤트리스너 추가
-                btn_operate.addEventListener('click', () => { 
-                    operate_point(x.id);
-                });
-                btnTd.appendChild(btn_operate);
                 nameTd.textContent = x.m_name;
-                pointTd.textContent = x.point;
                 tableTr.appendChild(nameTd);
-                tableTr.appendChild(pointTd);
-                tableTr.appendChild(btnTd);
-
                 list.appendChild(tableTr);
             });
             document.getElementById('date_info').innerHTML = `${res.data.record.startDate} ~ ${res.data.record.endDate}`
+            document.getElementById('winner_info').innerHTML = `${res.data.record.winMember}`
         }   
         else{
             alert('검색 결과가 없습니다.');

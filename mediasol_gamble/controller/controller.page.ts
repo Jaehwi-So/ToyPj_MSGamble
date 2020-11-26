@@ -38,12 +38,10 @@ class PageController implements Controller {
                     is_join : true,
                 }
             });
-            console.log(target, req.user)
             //로그인을 하지 않은 경우
             if(!req.user){
                 return res.render('record/point_modify_form', {result : 'fail', message : '로그인 후 이용하세요'});
             }
-            console.log(req.user.m_name);
             //경기에 참여하지 않은 경우
             if(req.user && !req.user.is_join){
                 return res.render('record/point_modify_form', {result : 'fail', message : '경기에 참여한 후 포인트 변경이 가능합니다.'});
@@ -65,6 +63,11 @@ class PageController implements Controller {
     /* 명예의 전당 페이지 렌더링 */
     public go_result_page  = (req: Request, res: Response, next: NextFunction) => {
         res.render('result/result_list', {});
+    };
+
+    /* 기록 상세보기 페이지 렌더링 */
+    public go_record_detail_page  = (req: Request, res: Response, next: NextFunction) => {
+        res.render('result/record_detail', {id : req.params.id});
     };
 }
 
