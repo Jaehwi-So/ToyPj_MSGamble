@@ -19,8 +19,8 @@ const application = new App(
 );
 
 /* 서버 실행 */
-const server = application.app.listen(application.app.get('port'), () => {
-  console.log(`${application.app.get('port')} port already`);
+const server = application.app.listen(application.app.get('port'), application.app.get('host'), () => {
+  console.log(`Running on ${application.app.get('host')} : ${application.app.get('port')}`);
 });
 
 /* 시간 스케줄 이벤트 등록 */

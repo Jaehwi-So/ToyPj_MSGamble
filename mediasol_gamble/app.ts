@@ -59,7 +59,8 @@ class App {
         RecordController.init_record();
 
         //port setting 
-        this.app.set('port', process.env.PORT || 8001);  
+        this.app.set('port', process.env.PORT || 8080);  
+        this.app.set('host', `${process.env.HOST}` || '0.0.0.0');  
     }
 
     /* 미들웨어 연결 */ 

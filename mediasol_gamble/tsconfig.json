@@ -68,7 +68,6 @@
     // "forceConsistentCasingInFileNames": true  /* Disallow inconsistently-cased references to the same file. */
     "typeRoots": [
       "./types",
-      "./node_modules/@types"
     ]
   },
   "include": ["node_modules"]
