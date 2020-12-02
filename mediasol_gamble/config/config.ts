@@ -18,8 +18,7 @@ const config: IConfigGroup = {
     "username": "root",
     "password": process.env.DB_PASSWORD!,
     "database": "msgamble",
-    "host": "mariadb",
-    "port": 3306,
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "dialectOptions": {
       "charset": "utf8mb4", 
@@ -45,8 +44,14 @@ const config: IConfigGroup = {
     "username": "root",
     "password": process.env.DB_PASSWORD!,
     "database": "msgamble",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "mariadb",
+    "port": 3306,
+    "dialect": "mysql",
+    "dialectOptions": {
+      "charset": "utf8mb4", 
+      "dateStrings" : true, 
+      "typeCast" : true 
+    },
   }
 };
 

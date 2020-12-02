@@ -17,6 +17,8 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=1111
       - MYSQL_DATABASE=msgamble
+    volumes:
+      - /var/lib/mysql
   app:
     networks:
       - app-tier
@@ -28,5 +30,7 @@ services:
       - "8000:8080"
     links:
       - database
+    volumes:
+      - ./server:/app
     depends_on:
       - database

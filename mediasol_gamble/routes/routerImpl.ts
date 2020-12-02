@@ -5,4 +5,4 @@ interface Route {
   url: string;
 }
 
-export default Route;
+export default Route; 
