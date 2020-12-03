@@ -17,6 +17,7 @@ services:
       - MYSQL_USER=root
       - MYSQL_PASSWORD=1111
       - MYSQL_DATABASE=msgamble
+      - TZ=Asia/Seoul
     volumes:
       - /var/lib/mysql
   app:
@@ -34,3 +35,5 @@ services:
       - ./server:/app
     depends_on:
       - database
+    environment:
+      - TZ=Asia/Seoul

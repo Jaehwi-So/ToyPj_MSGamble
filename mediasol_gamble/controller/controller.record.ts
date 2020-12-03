@@ -20,9 +20,9 @@ class RecordController implements Controller {
         let nowYear = now.getFullYear();
         nowYear += (nowYear < 2000) ? 1900 : 0;
         const weekStartDate = new Date(nowYear, nowMonth, nowDay - nowDayOfWeek + 1);
-        //const weekEndDate = new Date(nowYear, nowMonth, nowDay + (8 - nowDayOfWeek));
+        const weekEndDate = new Date(nowYear, nowMonth, nowDay + (8 - nowDayOfWeek));
         //const weekEndDate = new Date(Date.now() + (1000 * 60 * 10)); //use test : +10min
-        const weekEndDate = new Date(nowYear, nowMonth, nowDay + 1);   //use test : +1day
+        //const weekEndDate = new Date(nowYear, nowMonth, nowDay + 1);   //use test : +1day
         let result = [];
         result[0] = weekStartDate;
         result[1] = weekEndDate;
@@ -36,7 +36,7 @@ class RecordController implements Controller {
                 //활성화된 기록들 중 기간이 지난 기록을 비활성화 하기 위해서 하나씩 추출
                 const record = await Record.findOne({
                     where : {
-                        endDate : { [Op.lt]: new Date() },
+                        endDate : { [Op.lte]: new Date() },
                         is_active : true,
                     },
                     include: [{
